@@ -14,8 +14,8 @@ type TorrentOption struct {
 	Size  string `xml:"size"`
 }
 
-// GetId returns the id of the torrent -> https://nyaa.si/download/<id-here>.torrent
-func (t TorrentOption) GetId() string {
+// GetID returns the id of the torrent -> https://nyaa.si/download/<id-here>.torrent
+func (t TorrentOption) GetID() string {
 	parts := strings.Split(t.Link, "/")
 	return strings.Split(parts[len(parts)-1], ".")[0]
 }
