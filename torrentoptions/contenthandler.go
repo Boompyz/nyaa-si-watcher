@@ -28,6 +28,12 @@ func NewContentHandler(confDir string) *ContentHandler {
 	return &ContentHandler{watching, resolved, confDir}
 }
 
+// ResetResolved clears the resolved history.
+func (c *ContentHandler) ResetResolved() {
+	c.resolved = make([]string, 0)
+	writeLines(c.confDir+"/resolved", make([]string, 0))
+}
+
 // Filter the options to include only the ones that contain any of
 // watching and are not in resolved.
 func (c *ContentHandler) Filter(options []TorrentOption) []TorrentOption {
@@ -86,7 +92,7 @@ func writeLines(fileName string, lines []string) error {
 	}
 
 	for _, line := range lines {
-		_, err := file.WriteString(line)
+		_, err := file.WriteString(line + "\n")
 		if err != nil {
 			return err
 		}

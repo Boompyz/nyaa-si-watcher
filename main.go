@@ -10,8 +10,13 @@ import (
 func main() {
 
 	var confDir = flag.String("confDir", "/var/lib/nyaa-si-watcher", "The directory to look for watching.conf and resolved.conf")
+	var resetResolved = flag.Bool("r", false, "Set this to reset already resolved files. Default is false.")
 
 	contentHandler := torrentoptions.NewContentHandler(*confDir)
+
+	if *resetResolved {
+		contentHandler.ResetResolved()
+	}
 
 	options, err := torrentoptions.GetAllOptions()
 	if err != nil {
