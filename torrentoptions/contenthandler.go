@@ -60,7 +60,7 @@ func (c *ContentHandler) Get(options []TorrentOption) error {
 }
 
 func addTorrent(link string) {
-	err := exec.Command("deluge-console", "add", link).Start()
+	err := exec.Command("deluge-console", "add", link).Run()
 	if err != nil {
 		panic(err.Error())
 	}
