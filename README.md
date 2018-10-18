@@ -17,6 +17,7 @@ Currently the program only works with Deluge, as it uses `deluge-console` to add
         ```
 
 2. Prepare the `watching` and `resolved` files. By default the program will look in `/var/lib/nyaa-si-watcher/`, but this can be changed by passing `-confDir`. Each line will contain one name in `watching` or one id in `resolved`.
+Prepare `announcemails` - an email per line to send emails to using `mailutils`, notifying about changes.
 
 3. Run it.
     ```

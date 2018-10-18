@@ -47,6 +47,7 @@ nyaa-si-watcher
 	for _, addr := range m.targetMails {
 		sendMessage(addr, "Found new!", message)
 	}
+	fmt.Println("Finished announcing.")
 }
 
 func sendMessage(target, topic, body string) {
