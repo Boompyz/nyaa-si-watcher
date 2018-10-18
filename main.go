@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 
+	"github.com/Boompyz/nyaa-si-watcher/announcer"
 	"github.com/Boompyz/nyaa-si-watcher/torrentoptions"
 )
 
@@ -29,6 +30,9 @@ func main() {
 	for _, option := range options {
 		fmt.Println("Found new: " + option.Title)
 	}
+
+	announcer := announcer.NewMailAnnouncer(*confDir)
+	announcer.Announce(options)
 
 	err = contentHandler.Get(options)
 	if err != nil {

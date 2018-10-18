@@ -1,11 +1,12 @@
 package torrentoptions
 
 import (
-	"bufio"
-	"os"
+	"fmt"
 	"os/exec"
 	"sort"
 	"strings"
+
+	"github.com/Boompyz/nyaa-si-watcher/common"
 )
 
 // ContentHandler decides which files are already
@@ -20,8 +21,8 @@ type ContentHandler struct {
 // NewContentHandler creates a new instance loaded with the
 // configs in the specified folder.
 func NewContentHandler(confDir string) *ContentHandler {
-	watching := getLines(confDir + "/watching")
-	resolved := getLines(confDir + "/resolved")
+	watching := common.GetLines(confDir + "/watching")
+	resolved := common.GetLines(confDir + "/resolved")
 
 	sort.Strings(resolved)
 
@@ -31,7 +32,7 @@ func NewContentHandler(confDir string) *ContentHandler {
 // ResetResolved clears the resolved history.
 func (c *ContentHandler) ResetResolved() {
 	c.resolved = make([]string, 0)
-	writeLines(c.confDir+"/resolved", make([]string, 0))
+	common.WriteLines(c.confDir+"/resolved", make([]string, 0))
 }
 
 // Filter the options to include only the ones that contain any of
@@ -61,45 +62,16 @@ func (c *ContentHandler) Get(options []TorrentOption) error {
 	}
 	c.resolved = append(c.resolved, newlyResolved...)
 
-	err := writeLines(c.confDir+"/resolved", c.resolved)
+	err := common.WriteLines(c.confDir+"/resolved", c.resolved)
 	return err
 }
 
 func addTorrent(link string) {
+	fmt.Println("Adding: " + link)
 	err := exec.Command("deluge-console", "add", link).Run()
 	if err != nil {
 		panic(err.Error())
 	}
-}
-
-func getLines(fileName string) []string {
-	file, err := os.Open(fileName)
-	if err != nil {
-		panic("Couldn't read file: " + fileName)
-	}
-	scanner := bufio.NewScanner(file)
-	lines := make([]string, 0)
-	for scanner.Scan() {
-		lines = append(lines, scanner.Text())
-	}
-	return lines
-}
-
-func writeLines(fileName string, lines []string) error {
-	file, err := os.Create(fileName)
-	if err != nil {
-		return err
-	}
-
-	for _, line := range lines {
-		_, err := file.WriteString(line + "\n")
-		if err != nil {
-			return err
-		}
-	}
-
-	file.Close()
-	return nil
 }
 
 func sortedContains(arr []string, x string) bool {
