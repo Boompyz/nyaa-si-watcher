@@ -24,7 +24,4 @@ Prepare `announcemails` - an email per line to send emails to using `mailutils`,
     nyaa-si-watcher
     ```
     
-    Alternatively you can use other tools like `watch` to run it at specified interval.
-    ```
-    watch -n 300 nyaa-si-watcher
-    ```
+    The program checks every 30 seconds for updates, and shows the watched titles are shown in a webpage at port 80. (This will be used for settings in the future.)

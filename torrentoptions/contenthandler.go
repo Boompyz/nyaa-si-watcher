@@ -13,7 +13,7 @@ import (
 // retrieved and which shouldn't be at all.
 type ContentHandler struct {
 	Watching []string
-	resolved []string
+	Resolved []string
 
 	confDir string
 }
@@ -31,7 +31,7 @@ func NewContentHandler(confDir string) *ContentHandler {
 
 // ResetResolved clears the resolved history.
 func (c *ContentHandler) ResetResolved() {
-	c.resolved = make([]string, 0)
+	c.Resolved = make([]string, 0)
 	common.WriteLines(c.confDir+"/resolved", make([]string, 0))
 }
 
@@ -43,7 +43,7 @@ func (c *ContentHandler) Filter(options []TorrentOption) []TorrentOption {
 
 	for _, option := range options {
 		for _, watchedTitle := range c.Watching {
-			if strings.Contains(option.Title, watchedTitle) && !sortedContains(c.resolved, option.GetID()) {
+			if strings.Contains(option.Title, watchedTitle) && !sortedContains(c.Resolved, option.GetID()) {
 				filteredOptions = append(filteredOptions, option)
 				break
 			}
@@ -60,9 +60,9 @@ func (c *ContentHandler) Get(options []TorrentOption) error {
 		addTorrent(option.Link)
 		newlyResolved = append(newlyResolved, option.GetID())
 	}
-	c.resolved = append(c.resolved, newlyResolved...)
+	c.Resolved = append(c.Resolved, newlyResolved...)
 
-	err := common.WriteLines(c.confDir+"/resolved", c.resolved)
+	err := common.WriteLines(c.confDir+"/resolved", c.Resolved)
 	return err
 }
 
