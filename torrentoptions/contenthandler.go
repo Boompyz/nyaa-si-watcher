@@ -12,7 +12,7 @@ import (
 // ContentHandler decides which files are already
 // retrieved and which shouldn't be at all.
 type ContentHandler struct {
-	watching []string
+	Watching []string
 	resolved []string
 
 	confDir string
@@ -42,7 +42,7 @@ func (c *ContentHandler) Filter(options []TorrentOption) []TorrentOption {
 	filteredOptions := make([]TorrentOption, 0)
 
 	for _, option := range options {
-		for _, watchedTitle := range c.watching {
+		for _, watchedTitle := range c.Watching {
 			if strings.Contains(option.Title, watchedTitle) && !sortedContains(c.resolved, option.GetID()) {
 				filteredOptions = append(filteredOptions, option)
 				break
