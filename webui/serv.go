@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -71,11 +72,11 @@ func ignore(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func Listen(_confDir string) {
+func Listen(_confDir string, _port int, interval int) {
 	tmpl = template.Must(template.ParseFiles("webui/template.html"))
 
 	go func() {
-		for range time.NewTicker(time.Second * 30).C {
+		for range time.NewTicker(time.Second * time.Duration(interval)).C {
 			update()
 		}
 	}()
@@ -89,5 +90,6 @@ func Listen(_confDir string) {
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/request", requests)
 	http.HandleFunc("/favicon.ico", ignore)
-	log.Fatal(http.ListenAndServe(":80", nil))
+
+	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(_port), nil))
 }

@@ -7,6 +7,8 @@ import (
 	"github.com/antchfx/xquery/xml"
 )
 
+var DefaultResolution string
+
 // TorrentOption Represents a torrent option to download
 type TorrentOption struct {
 	Title string `xml:"title"`
@@ -20,9 +22,9 @@ func (t TorrentOption) GetID() string {
 	return strings.Split(parts[len(parts)-1], ".")[0]
 }
 
-// GetAllOptions returns all torrents in the RSS feed for HorribleSubs 720p
+// GetAllOptions returns all torrents in the RSS feed for HorribleSubs default resolution
 func GetAllOptions() ([]TorrentOption, error) {
-	return GetAllOptionsWithQuery("720p")
+	return GetAllOptionsWithQuery(DefaultResolution)
 }
 
 // GetAllOptionsWithQuery returns all torrents in the RSS feed for HorribleSubs with the given query
