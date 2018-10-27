@@ -22,7 +22,12 @@ func (t TorrentOption) GetID() string {
 
 // GetAllOptions returns all torrents in the RSS feed for HorribleSubs 720p
 func GetAllOptions() ([]TorrentOption, error) {
-	doc, err := xmlquery.LoadURL("https://nyaa.si/?page=rss&q=720p&c=0_0&f=0&u=HorribleSubs")
+	return GetAllOptionsWithQuery("720p")
+}
+
+// GetAllOptionsWithQuery returns all torrents in the RSS feed for HorribleSubs with the given query
+func GetAllOptionsWithQuery(searchString string) ([]TorrentOption, error) {
+	doc, err := xmlquery.LoadURL("https://nyaa.si/?page=rss&q=" + searchString + "&c=0_0&f=0&u=HorribleSubs")
 	if err != nil {
 		return make([]TorrentOption, 0), err
 	}

@@ -3,8 +3,10 @@ package webui
 import (
 	"fmt"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/Boompyz/nyaa-si-watcher/announcer"
@@ -30,7 +32,12 @@ func update() {
 	announcer := announcer.NewMailAnnouncer(confDir)
 	announcer.Announce(options)
 
-	err = contentHandler.Get(options)
+	get(options)
+}
+
+func get(options []torrentoptions.TorrentOption) {
+
+	err := contentHandler.Get(options)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -49,6 +56,17 @@ func handler(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func requests(w http.ResponseWriter, r *http.Request) {
+	requestByte, _ := ioutil.ReadAll(r.Body)
+	request := string(requestByte)
+	strings.Replace(request, " ", "+", -1)
+
+	options, _ := torrentoptions.GetAllOptionsWithQuery(request)
+	fmt.Println(options)
+	get(options)
+	fmt.Println(request)
+}
+
 func ignore(w http.ResponseWriter, r *http.Request) {
 
 }
@@ -65,7 +83,11 @@ func Listen(_confDir string) {
 	confDir = _confDir
 	contentHandler = torrentoptions.NewContentHandler(confDir)
 
+	fs := http.FileServer(http.Dir("webui"))
+
+	http.Handle("/script.js", fs)
 	http.HandleFunc("/", handler)
+	http.HandleFunc("/request", requests)
 	http.HandleFunc("/favicon.ico", ignore)
 	log.Fatal(http.ListenAndServe(":80", nil))
 }

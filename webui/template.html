@@ -1,6 +1,14 @@
-<h1> Welcome to nyaa-si-watcher </h1>
-<ul>
-    {{range .ContentHandler.Watching}}
+<head>
+    <script src="script.js"></script>
+</head>
+
+<body>
+    <h1> Welcome to nyaa-si-watcher </h1>
+    <ul>
+        {{range .ContentHandler.Watching}}
         <li>{{.}}</li>
-    {{end}}
-</ul>
+        {{end}}
+    </ul>
+    <input id="query" type="text"/>
+    <button onclick="request()">Ask</button>
+</body>
