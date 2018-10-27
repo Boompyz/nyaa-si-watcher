@@ -25,6 +25,7 @@ func WriteLines(fileName string, lines []string) error {
 	if err != nil {
 		return err
 	}
+	defer file.Close()
 
 	for _, line := range lines {
 		_, err := file.WriteString(line + "\n")
@@ -33,6 +34,5 @@ func WriteLines(fileName string, lines []string) error {
 		}
 	}
 
-	file.Close()
 	return nil
 }

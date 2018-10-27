@@ -38,15 +38,32 @@ func (c *ContentHandler) ResetResolved() {
 // Filter the options to include only the ones that contain any of
 // watching and are not in resolved.
 func (c *ContentHandler) Filter(options []TorrentOption) []TorrentOption {
+	return c.FilterWatching(c.FilterResolved(options))
+}
 
+// FilterWatching filters the options to include only the ones that contain any of watching
+func (c *ContentHandler) FilterWatching(options []TorrentOption) []TorrentOption {
 	filteredOptions := make([]TorrentOption, 0)
 
 	for _, option := range options {
 		for _, watchedTitle := range c.Watching {
-			if strings.Contains(option.Title, watchedTitle) && !sortedContains(c.Resolved, option.GetID()) {
+			if strings.Contains(option.Title, watchedTitle) {
 				filteredOptions = append(filteredOptions, option)
 				break
 			}
+		}
+	}
+
+	return filteredOptions
+}
+
+// FilterResolved filters the options to include only the ones that are not resolved
+func (c *ContentHandler) FilterResolved(options []TorrentOption) []TorrentOption {
+	filteredOptions := make([]TorrentOption, 0)
+
+	for _, option := range options {
+		if !sortedContains(c.Resolved, option.GetID()) {
+			filteredOptions = append(filteredOptions, option)
 		}
 	}
 
@@ -61,6 +78,7 @@ func (c *ContentHandler) Get(options []TorrentOption) error {
 		newlyResolved = append(newlyResolved, option.GetID())
 	}
 	c.Resolved = append(c.Resolved, newlyResolved...)
+	sort.Strings(c.Resolved)
 
 	err := common.WriteLines(c.confDir+"/resolved", c.Resolved)
 	return err
