@@ -1,7 +1,7 @@
 function request() {
     text = document.getElementById("query").value;
-    request = new XMLHttpRequest();
-    request.open("POST", "/request", true);
-    request.send(text);
+    xmlrequest = new XMLHttpRequest();
+    xmlrequest.open("POST", "/request", true);
+    xmlrequest.send(text);
     alert('Sent request for ' + text);
 }
