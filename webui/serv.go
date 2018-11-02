@@ -22,7 +22,8 @@ func update() {
 
 	options, err := torrentoptions.GetAllOptions()
 	if err != nil {
-		panic(err.Error())
+		fmt.Println(err.Error())
+		return
 	}
 
 	options = contentHandler.Filter(options)
@@ -42,7 +43,9 @@ func get(options []torrentoptions.TorrentOption) {
 	if err != nil {
 		panic(err.Error())
 	}
-	fmt.Println("Added successfuly")
+	if len(options) != 0 {
+		fmt.Println("Added successfuly")
+	}
 }
 
 type pageData struct {
