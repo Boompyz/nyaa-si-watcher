@@ -50,11 +50,11 @@ func NewContentHandler(confDir string) *ContentHandler {
 
 // Save the state to the store file
 func (c *ContentHandler) Save() {
-	encoded, err := json.Marshal(c)
+	encoded, err := json.MarshalIndent(c, "", "	")
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Saving to file: " + string(encoded))
+	//fmt.Println("Saving to file: " + string(encoded))
 	if err := ioutil.WriteFile(c.confDir+"/store.json", encoded, os.ModePerm); err != nil {
 		panic(err)
 	}
@@ -94,10 +94,9 @@ func (c *ContentHandler) GetNewQuery(query string) []TorrentOption {
 	return toGet
 }
 
-// AddNewWatch adds the new watch and refreshes everything
+// AddNewWatch adds the new watch
 func (c *ContentHandler) AddNewWatch(watch string) {
 	c.Watching = append(c.Watching, watch)
-	c.GetNew()
 }
 
 // filterResolved filters the options to include only the ones that are not resolved

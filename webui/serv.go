@@ -26,7 +26,7 @@ type pageData struct {
 
 func handler(w http.ResponseWriter, r *http.Request) {
 	fmt.Println(r.URL)
-	fmt.Println(contentHandler)
+	//fmt.Println(contentHandler)
 	tmpl.Execute(w, pageData{
 		ContentHandler: *contentHandler,
 	})
@@ -44,6 +44,7 @@ func addWatch(w http.ResponseWriter, r *http.Request) {
 	requestByte, _ := ioutil.ReadAll(r.Body)
 	request := string(requestByte)
 
+	defer contentHandler.GetNew()
 	contentHandler.AddNewWatch(request)
 	fmt.Println(request)
 }
