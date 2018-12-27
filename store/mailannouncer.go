@@ -1,30 +1,25 @@
-package announcer
+package store
 
 import (
 	"fmt"
 	"os"
 	"os/exec"
 	"strings"
-
-	"github.com/Boompyz/nyaa-si-watcher/common"
-	"github.com/Boompyz/nyaa-si-watcher/torrentoptions"
 )
 
 // MailAnnouncer announces when something new has been added
 // by sending emails to the specified addresses.
 type MailAnnouncer struct {
-	targetMails []string
+	TargetMails []string `json:"addresses"`
 }
 
-// NewMailAnnouncer creates a new MailAnnouncer with
-// prepared bunch of emails (read from file).
-func NewMailAnnouncer(confDir string) *MailAnnouncer {
-	targetMails := common.GetLines(confDir + "/announcemails")
-	return &MailAnnouncer{targetMails}
+// NewMailAnnouncer creates a new MailAnnouncer with no emails
+func NewMailAnnouncer() *MailAnnouncer {
+	return &MailAnnouncer{make([]string, 0)}
 }
 
 // Announce sends an announcement about the given options.
-func (m *MailAnnouncer) Announce(options []torrentoptions.TorrentOption) {
+func (m *MailAnnouncer) Announce(options []TorrentOption) {
 	if len(options) == 0 {
 		return
 	}
@@ -44,7 +39,7 @@ Regards,
 nyaa-si-watcher
 `
 
-	for _, addr := range m.targetMails {
+	for _, addr := range m.TargetMails {
 		sendMessage(addr, "Found new!", message)
 	}
 	fmt.Println("Finished announcing.")

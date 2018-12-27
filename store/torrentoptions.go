@@ -1,19 +1,18 @@
-package torrentoptions
+package store
 
 import (
 	"encoding/xml"
+	"net/url"
 	"strings"
 
-	"github.com/antchfx/xquery/xml"
+	xmlquery "github.com/antchfx/xquery/xml"
 )
-
-var DefaultResolution string
 
 // TorrentOption Represents a torrent option to download
 type TorrentOption struct {
-	Title string `xml:"title"`
-	Link  string `xml:"link"`
-	Size  string `xml:"size"`
+	Title string `xml:"title" json:"title"`
+	Link  string `xml:"link" json:"link"`
+	Size  string `xml:"size" json:"size"`
 }
 
 // GetID returns the id of the torrent -> https://nyaa.si/download/<id-here>.torrent
@@ -22,13 +21,10 @@ func (t TorrentOption) GetID() string {
 	return strings.Split(parts[len(parts)-1], ".")[0]
 }
 
-// GetAllOptions returns all torrents in the RSS feed for HorribleSubs default resolution
-func GetAllOptions() ([]TorrentOption, error) {
-	return GetAllOptionsWithQuery(DefaultResolution)
-}
-
 // GetAllOptionsWithQuery returns all torrents in the RSS feed for HorribleSubs with the given query
+// The function handles url character escape
 func GetAllOptionsWithQuery(searchString string) ([]TorrentOption, error) {
+	searchString = url.QueryEscape(searchString)
 	doc, err := xmlquery.LoadURL("https://nyaa.si/?page=rss&q=" + searchString + "&c=0_0&f=0&u=HorribleSubs")
 	if err != nil {
 		return make([]TorrentOption, 0), err
