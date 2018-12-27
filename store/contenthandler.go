@@ -22,7 +22,19 @@ type ContentHandler struct {
 // configs in the specified folder.
 func NewContentHandler(confDir string) *ContentHandler {
 
-	bytes, err := ioutil.ReadFile(confDir + "/store.json")
+	filename := confDir + "/store.json"
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
+		// If the file doesn't exist
+		_, err := os.Create(filename)
+		if err != nil {
+			panic(err)
+		}
+		var ch = &ContentHandler{make([]string, 0), make(map[string]TorrentOption), *NewMailAnnouncer(), confDir}
+		ch.Save()
+		return ch
+	}
+
+	bytes, err := ioutil.ReadFile(filename)
 	if err != nil {
 		panic(err)
 	}
@@ -31,6 +43,7 @@ func NewContentHandler(confDir string) *ContentHandler {
 	if err = json.Unmarshal(bytes, &ret); err != nil {
 		panic(err)
 	}
+	ret.confDir = confDir
 
 	return &ret
 }
@@ -41,6 +54,7 @@ func (c *ContentHandler) Save() {
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println("Saving to file: " + string(encoded))
 	if err := ioutil.WriteFile(c.confDir+"/store.json", encoded, os.ModePerm); err != nil {
 		panic(err)
 	}
