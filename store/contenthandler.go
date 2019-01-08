@@ -78,6 +78,7 @@ func (c *ContentHandler) GetNew() []TorrentOption {
 		options = append(options, c.filterResolved(option)...)
 	}
 	c.get(options)
+	c.Announcer.Announce(options)
 	return options
 }
 
