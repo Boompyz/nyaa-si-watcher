@@ -6,10 +6,16 @@
     <h1> Welcome to nyaa-si-watcher </h1>
     <ul>
         {{range .ContentHandler.Watching}}
-        <li>{{.}}</li>
+        <li><b>{{.}}</b><button onclick="remove('watch', '{{.}}');">X</button></li>
         {{end}}
     </ul>
-    <input id="query" type="text"/>
+    <ul>
+        {{range .ContentHandler.Announcer}}
+        <li><b>{{.}}</b><button onclick="remove('email', '{{.}}')">X</button></li>
+        {{end}}
+    </ul>
+    <input id="query" type="text" />
     <button onclick="request()">Ask</button>
-    <button onclick="addWatch()">Add New Watch</button>
+    <button onclick="add('watch', document.getElementById('query').value)">Add New Watch</button>
+    <button onclick="add('email', document.getElementById('query').value)">Add New Email</button>
 </body>

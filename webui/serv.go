@@ -35,8 +35,16 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func requests(w http.ResponseWriter, r *http.Request) {
 	requestByte, _ := ioutil.ReadAll(r.Body)
 	request := string(requestByte)
-
 	contentHandler.GetNewQuery(request)
+	fmt.Println(request)
+}
+
+func removeWatch(w http.ResponseWriter, r *http.Request) {
+	requestByte, _ := ioutil.ReadAll(r.Body)
+	request := string(requestByte)
+
+	w.Write([]byte("Removed" + request))
+	defer contentHandler.RemoveWatch(request)
 	fmt.Println(request)
 }
 
@@ -44,12 +52,32 @@ func addWatch(w http.ResponseWriter, r *http.Request) {
 	requestByte, _ := ioutil.ReadAll(r.Body)
 	request := string(requestByte)
 
+	w.Write([]byte("Added"))
 	defer contentHandler.GetNew()
-	contentHandler.AddNewWatch(request)
+	defer contentHandler.AddNewWatch(request)
 	fmt.Println(request)
 }
 
 func ignore(w http.ResponseWriter, r *http.Request) {
+	// ignore the request
+}
+
+func addEmail(w http.ResponseWriter, r *http.Request) {
+	requestByte, _ := ioutil.ReadAll(r.Body)
+	request := string(requestByte)
+
+	contentHandler.Announcer.AddEmail(request)
+	w.Write([]byte("Added"))
+	defer contentHandler.Save()
+}
+
+func removeEmail(w http.ResponseWriter, r *http.Request) {
+	requestByte, _ := ioutil.ReadAll(r.Body)
+	request := string(requestByte)
+
+	contentHandler.Announcer.RemoveEmail(request)
+	w.Write([]byte("Removed"))
+	defer contentHandler.Save()
 
 }
 
@@ -60,8 +88,9 @@ func Listen(_confDir string, _port int, interval int) {
 	contentHandler = store.NewContentHandler(confDir)
 
 	go func() {
-		for range time.NewTicker(time.Second * time.Duration(interval)).C {
+		for {
 			update()
+			time.Sleep(300 * time.Second)
 		}
 	}()
 
@@ -70,7 +99,13 @@ func Listen(_confDir string, _port int, interval int) {
 	http.Handle("/script.js", fs)
 	http.HandleFunc("/", handler)
 	http.HandleFunc("/request", requests)
+
 	http.HandleFunc("/addwatch", addWatch)
+	http.HandleFunc("/removewatch", removeWatch)
+
+	http.HandleFunc("/addemail", addEmail)
+	http.HandleFunc("/removeemail", removeEmail)
+
 	http.HandleFunc("/favicon.ico", ignore)
 
 	log.Fatal(http.ListenAndServe(":"+strconv.Itoa(_port), nil))
