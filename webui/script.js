@@ -15,12 +15,12 @@ function add(what, name) {
         }
     }
     xmlrequest.open("POST", "/add" + what, true);
-    xmlrequest.send(nname);
+    xmlrequest.send(name);
 }
 
 function remove(what, name) {
     xmlrequest = new XMLHttpRequest();
-    xmlrequest.onreadystatechange() = function () {
+    xmlrequest.onreadystatechange = function () {
         if (xmlrequest.readyState == 4 && xmlrequest.status == 200) {
             location.reload();
         } else if (xmlrequest.readyState == 4) {

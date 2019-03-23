@@ -3,14 +3,19 @@
 </head>
 
 <body>
-    <h1> Welcome to nyaa-si-watcher </h1>
-    <ul>
+    <h1>Welcome to nyaa-si-watcher</h1>
+    <h2>Watch List</h2>
+    <table>
         {{range .ContentHandler.Watching}}
-        <li><b>{{.}}</b><button onclick="remove('watch', '{{.}}');">X</button></li>
+		<tr>
+				<td><b>{{.}}</b></td>
+				<td><button onclick="remove('watch', '{{.}}');">X</button></td>
+		</tr>
         {{end}}
-    </ul>
+    </table>
+    <h2>Emails</h2>
     <ul>
-        {{range .ContentHandler.Announcer}}
+        {{range .ContentHandler.Announcer.TargetMails}}
         <li><b>{{.}}</b><button onclick="remove('email', '{{.}}')">X</button></li>
         {{end}}
     </ul>
