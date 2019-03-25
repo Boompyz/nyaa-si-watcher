@@ -90,7 +90,7 @@ func Listen(_confDir string, _port int, interval int) {
 	go func() {
 		for {
 			update()
-			time.Sleep(300 * time.Second)
+			time.Sleep(time.Duration(interval) * time.Second)
 		}
 	}()
 
