@@ -73,3 +73,24 @@ func sendMessage(target, topic, body string) {
 	command.Wait()
 	fmt.Println("Closed process.")
 }
+
+// AddEmail adds an email to be notified when a notification pops
+func (m *MailAnnouncer) AddEmail(emailAddress string) {
+	m.TargetMails = append(m.TargetMails, emailAddress)
+}
+
+// RemoveEmail removes an email from the notification list
+func (m *MailAnnouncer) RemoveEmail(emailAddress string) {
+	index := -1
+
+	for idx, val := range m.TargetMails {
+		if val == emailAddress {
+			index = idx
+			break
+		}
+	}
+
+	if index != -1 {
+		m.TargetMails = append(m.TargetMails[0:index], m.TargetMails[index+1:]...)
+	}
+}

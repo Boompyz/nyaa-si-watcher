@@ -100,6 +100,20 @@ func (c *ContentHandler) AddNewWatch(watch string) {
 	c.Watching = append(c.Watching, watch)
 }
 
+// RemoveWatch removes a watch
+func (c *ContentHandler) RemoveWatch(watch string) {
+	index := -1
+	for idx, val := range c.Watching {
+		if val == watch {
+			index = idx
+			break
+		}
+	}
+	if index != -1 {
+		c.Watching = append(c.Watching[:index], c.Watching[index+1:]...)
+	}
+}
+
 // filterResolved filters the options to include only the ones that are not resolved
 func (c *ContentHandler) filterResolved(options []TorrentOption) []TorrentOption {
 	filteredOptions := make([]TorrentOption, 0)

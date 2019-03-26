@@ -5,14 +5,28 @@ function request() {
     xmlrequest.send(text);
     alert('Sent request for ' + text);
 }
-function addWatch() {
-    text = document.getElementById("query").value;
+function add(what, name) {
     xmlrequest = new XMLHttpRequest();
     xmlrequest.onreadystatechange = function () {
         if (xmlrequest.readyState === 4 && xmlrequest.status === 200) {
             location.reload();
+        } else if (xmlrequest.readyState == 4) {
+            alert("error")
         }
     }
-    xmlrequest.open("POST", "/addwatch", true);
-    xmlrequest.send(text);
+    xmlrequest.open("POST", "/add" + what, true);
+    xmlrequest.send(name);
+}
+
+function remove(what, name) {
+    xmlrequest = new XMLHttpRequest();
+    xmlrequest.onreadystatechange = function () {
+        if (xmlrequest.readyState == 4 && xmlrequest.status == 200) {
+            location.reload();
+        } else if (xmlrequest.readyState == 4) {
+            alert("error")
+        }
+    }
+    xmlrequest.open("POST", "/remove" + what, true);
+    xmlrequest.send(name);
 }

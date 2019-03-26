@@ -3,13 +3,24 @@
 </head>
 
 <body>
-    <h1> Welcome to nyaa-si-watcher </h1>
-    <ul>
+    <h1>Welcome to nyaa-si-watcher</h1>
+    <h2>Watch List</h2>
+    <table>
         {{range .ContentHandler.Watching}}
-        <li>{{.}}</li>
+		<tr>
+				<td><b>{{.}}</b></td>
+				<td><button onclick="remove('watch', '{{.}}');">X</button></td>
+		</tr>
+        {{end}}
+    </table>
+    <h2>Emails</h2>
+    <ul>
+        {{range .ContentHandler.Announcer.TargetMails}}
+        <li><b>{{.}}</b><button onclick="remove('email', '{{.}}')">X</button></li>
         {{end}}
     </ul>
-    <input id="query" type="text"/>
+    <input id="query" type="text" />
     <button onclick="request()">Ask</button>
-    <button onclick="addWatch()">Add New Watch</button>
+    <button onclick="add('watch', document.getElementById('query').value)">Add New Watch</button>
+    <button onclick="add('email', document.getElementById('query').value)">Add New Email</button>
 </body>
