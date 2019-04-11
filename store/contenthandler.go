@@ -98,6 +98,7 @@ func (c *ContentHandler) GetNewQuery(query string) []TorrentOption {
 // AddNewWatch adds the new watch
 func (c *ContentHandler) AddNewWatch(watch string) {
 	c.Watching = append(c.Watching, watch)
+	c.Save()
 }
 
 // RemoveWatch removes a watch
@@ -112,6 +113,7 @@ func (c *ContentHandler) RemoveWatch(watch string) {
 	if index != -1 {
 		c.Watching = append(c.Watching[:index], c.Watching[index+1:]...)
 	}
+	c.Save()
 }
 
 // filterResolved filters the options to include only the ones that are not resolved

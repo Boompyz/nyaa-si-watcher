@@ -67,6 +67,7 @@ func addEmail(w http.ResponseWriter, r *http.Request) {
 	request := string(requestByte)
 
 	contentHandler.Announcer.AddEmail(request)
+	contentHandler.Save()
 	w.Write([]byte("Added"))
 	defer contentHandler.Save()
 }
@@ -76,6 +77,7 @@ func removeEmail(w http.ResponseWriter, r *http.Request) {
 	request := string(requestByte)
 
 	contentHandler.Announcer.RemoveEmail(request)
+	contentHandler.Save()
 	w.Write([]byte("Removed"))
 	defer contentHandler.Save()
 
