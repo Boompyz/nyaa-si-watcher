@@ -71,10 +71,7 @@ func (c *ContentHandler) ResetResolved() {
 func (c *ContentHandler) GetNew() []TorrentOption {
 	options := make([]TorrentOption, 0)
 	for _, watch := range c.Watching {
-		option, err := GetAllOptionsWithQuery(watch)
-		if err != nil {
-			return nil
-		}
+		option, _ := GetAllOptionsWithQuery(watch)
 		options = append(options, c.filterResolved(option)...)
 	}
 	c.get(options)
