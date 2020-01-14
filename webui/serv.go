@@ -35,7 +35,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func requests(w http.ResponseWriter, r *http.Request) {
 	requestByte, _ := ioutil.ReadAll(r.Body)
 	request := string(requestByte)
-	contentHandler.GetNewQuery(request)
+	contentHandler.GetNewQuery(request, "/srv/torrents/HorribleSubs")
 	fmt.Println(request)
 }
 
@@ -54,7 +54,7 @@ func addWatch(w http.ResponseWriter, r *http.Request) {
 
 	w.Write([]byte("Added"))
 	defer contentHandler.GetNew()
-	defer contentHandler.AddNewWatch(request)
+	defer contentHandler.AddNewWatch(request, "/srv/torrents/HorribleSubs")
 	fmt.Println(request)
 }
 

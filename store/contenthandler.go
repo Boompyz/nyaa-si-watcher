@@ -8,10 +8,17 @@ import (
 	"os/exec"
 )
 
+// Watch represents a single query that is being watched
+// and the folder the torrents should go in.
+type Watch struct {
+	Query  string `json:"query"`
+	Folder string `json:"folder"`
+}
+
 // ContentHandler decides which files are already
 // retrieved and which shouldn't be at all.
 type ContentHandler struct {
-	Watching  []string                 `json:"watching"`
+	Watching  []Watch                  `json:"watching"`
 	Resolved  map[string]TorrentOption `json:"resolved"`
 	Announcer MailAnnouncer            `json:"mailannouncer"`
 
@@ -29,7 +36,7 @@ func NewContentHandler(confDir string) *ContentHandler {
 		if err != nil {
 			panic(err)
 		}
-		var ch = &ContentHandler{make([]string, 0), make(map[string]TorrentOption), *NewMailAnnouncer(), confDir}
+		var ch = &ContentHandler{make([]Watch, 0), make(map[string]TorrentOption), *NewMailAnnouncer(), confDir}
 		ch.Save()
 		return ch
 	}
@@ -71,30 +78,31 @@ func (c *ContentHandler) ResetResolved() {
 func (c *ContentHandler) GetNew() []TorrentOption {
 	options := make([]TorrentOption, 0)
 	for _, watch := range c.Watching {
-		option, _ := GetAllOptionsWithQuery(watch)
-		options = append(options, c.filterResolved(option)...)
+		option, _ := GetAllOptionsWithQuery(watch.Query)
+		option = c.filterResolved(option)
+		options = append(options, option...)
+		c.get(option, watch.Folder)
 	}
-	c.get(options)
 	c.Announcer.Announce(options)
 	return options
 }
 
 // GetNewQuery adds a bunch of torrents without adding them to the watching
 // Disregards resolved and doesn't add them there
-func (c *ContentHandler) GetNewQuery(query string) []TorrentOption {
+func (c *ContentHandler) GetNewQuery(query string, folder string) []TorrentOption {
 	toGet, err := GetAllOptionsWithQuery(query)
 	if err != nil {
 		fmt.Print(err)
 	}
 	for _, option := range toGet {
-		addTorrent(option.Link)
+		addTorrent(option.Link, folder)
 	}
 	return toGet
 }
 
 // AddNewWatch adds the new watch
-func (c *ContentHandler) AddNewWatch(watch string) {
-	c.Watching = append(c.Watching, watch)
+func (c *ContentHandler) AddNewWatch(watch string, folder string) {
+	c.Watching = append(c.Watching, Watch{watch, folder})
 	c.Save()
 }
 
@@ -102,7 +110,7 @@ func (c *ContentHandler) AddNewWatch(watch string) {
 func (c *ContentHandler) RemoveWatch(watch string) {
 	index := -1
 	for idx, val := range c.Watching {
-		if val == watch {
+		if val.Query == watch {
 			index = idx
 			break
 		}
@@ -128,17 +136,19 @@ func (c *ContentHandler) filterResolved(options []TorrentOption) []TorrentOption
 }
 
 // Get the files specified. Overwrites resolved in the conf directory.
-func (c *ContentHandler) get(options []TorrentOption) {
+func (c *ContentHandler) get(options []TorrentOption, folder string) {
 	for _, option := range options {
-		addTorrent(option.Link)
+		addTorrent(option.Link, folder)
 		c.Resolved[option.GetID()] = option
 	}
 	c.Save()
 }
 
-func addTorrent(link string) {
+func addTorrent(link string, folder string) {
 	fmt.Println("Adding: " + link)
-	err := exec.Command("deluge-console", "add", link).Run()
+	cmd := exec.Command("curl", "-O", link)
+	cmd.Dir = folder
+	err := cmd.Run()
 	if err != nil {
 		panic(err.Error())
 	}

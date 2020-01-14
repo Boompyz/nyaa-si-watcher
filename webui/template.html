@@ -5,11 +5,12 @@
 <body>
     <h1>Welcome to nyaa-si-watcher</h1>
     <h2>Watch List</h2>
-    <table>
+    <table border="1">
         {{range .ContentHandler.Watching}}
 		<tr>
-				<td><b>{{.}}</b></td>
-				<td><button onclick="remove('watch', '{{.}}');">X</button></td>
+            <td><b>{{.Query}}</b></td>
+            <td><b>{{.Folder}}</b></td>
+            <td><button onclick="remove('watch', '{{.Query}}');">X</button></td>
 		</tr>
         {{end}}
     </table>
