@@ -13,6 +13,7 @@ import (
 type Watch struct {
 	Query  string `json:"query"`
 	Folder string `json:"folder"`
+	User   string `json:"user"`
 }
 
 // ContentHandler decides which files are already
@@ -78,7 +79,7 @@ func (c *ContentHandler) ResetResolved() {
 func (c *ContentHandler) GetNew() []TorrentOption {
 	options := make([]TorrentOption, 0)
 	for _, watch := range c.Watching {
-		option, _ := GetAllOptionsWithQuery(watch.Query)
+		option, _ := GetAllOptionsWithQuery(watch.Query, watch.User)
 		option = c.filterResolved(option)
 		options = append(options, option...)
 		c.get(option, watch.Folder)
@@ -89,8 +90,8 @@ func (c *ContentHandler) GetNew() []TorrentOption {
 
 // GetNewQuery adds a bunch of torrents without adding them to the watching
 // Disregards resolved and doesn't add them there
-func (c *ContentHandler) GetNewQuery(query string, folder string) []TorrentOption {
-	toGet, err := GetAllOptionsWithQuery(query)
+func (c *ContentHandler) GetNewQuery(query string, folder string, user string) []TorrentOption {
+	toGet, err := GetAllOptionsWithQuery(query, user)
 	if err != nil {
 		fmt.Print(err)
 	}
@@ -101,8 +102,8 @@ func (c *ContentHandler) GetNewQuery(query string, folder string) []TorrentOptio
 }
 
 // AddNewWatch adds the new watch
-func (c *ContentHandler) AddNewWatch(watch string, folder string) {
-	c.Watching = append(c.Watching, Watch{watch, folder})
+func (c *ContentHandler) AddNewWatch(watch string, folder string, user string) {
+	c.Watching = append(c.Watching, Watch{watch, folder, user})
 	c.Save()
 }
 

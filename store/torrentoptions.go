@@ -23,9 +23,13 @@ func (t TorrentOption) GetID() string {
 
 // GetAllOptionsWithQuery returns all torrents in the RSS feed for HorribleSubs with the given query
 // The function handles url character escape
-func GetAllOptionsWithQuery(searchString string) ([]TorrentOption, error) {
+func GetAllOptionsWithQuery(searchString string, user string) ([]TorrentOption, error) {
 	searchString = url.QueryEscape(searchString)
-	doc, err := xmlquery.LoadURL("https://nyaa.si/?page=rss&q=" + searchString + "&c=0_0&f=0&u=HorribleSubs")
+	link := "https://nyaa.si/?page=rss&q=" + searchString + "&c=0_0&f=0"
+	if user != "" {
+		link += "&u=" + user
+	}
+	doc, err := xmlquery.LoadURL(link)
 	if err != nil {
 		return make([]TorrentOption, 0), err
 	}

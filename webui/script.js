@@ -5,7 +5,12 @@ function request() {
     xmlrequest.send(text);
     alert('Sent request for ' + text);
 }
-function add(what, name) {
+function addWatch() {
+    watch = {}
+    watch.query = document.getElementById('query').value
+    watch.folder = document.getElementById('folder').value
+    watch.user = document.getElementById('user').value
+    
     xmlrequest = new XMLHttpRequest();
     xmlrequest.onreadystatechange = function () {
         if (xmlrequest.readyState === 4 && xmlrequest.status === 200) {
@@ -14,11 +19,16 @@ function add(what, name) {
             alert("error")
         }
     }
-    xmlrequest.open("POST", "/add" + what, true);
-    xmlrequest.send(name);
+    xmlrequest.open("POST", "/addwatch", true);
+    xmlrequest.send(JSON.stringify(watch));
 }
 
-function remove(what, name) {
+function removeWatch(query, user, folder) {
+    watch = {}
+    watch.query = query
+    watch.folder = user
+    watch.user = folder
+
     xmlrequest = new XMLHttpRequest();
     xmlrequest.onreadystatechange = function () {
         if (xmlrequest.readyState == 4 && xmlrequest.status == 200) {
@@ -27,6 +37,6 @@ function remove(what, name) {
             alert("error")
         }
     }
-    xmlrequest.open("POST", "/remove" + what, true);
-    xmlrequest.send(name);
+    xmlrequest.open("POST", "/removewatch", true);
+    xmlrequest.send(JSON.stringify(watch));
 }

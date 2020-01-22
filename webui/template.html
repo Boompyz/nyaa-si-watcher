@@ -10,7 +10,8 @@
 		<tr>
             <td><b>{{.Query}}</b></td>
             <td><b>{{.Folder}}</b></td>
-            <td><button onclick="remove('watch', '{{.Query}}');">X</button></td>
+            <td><b>{{.User}}</b></td>
+            <td><button onclick="removeWatch('{{.Query}}', '{{.}}', '{{.Query}}');">X</button></td>
 		</tr>
         {{end}}
     </table>
@@ -20,8 +21,15 @@
         <li><b>{{.}}</b><button onclick="remove('email', '{{.}}')">X</button></li>
         {{end}}
     </ul>
+    <a>User:</a>
+    <input id="user" type="text" />
+    <a>Query:</a>
     <input id="query" type="text" />
+    <a>Folder:</a>
+    <input id="folder" type="text" />
     <button onclick="request()">Ask</button>
-    <button onclick="add('watch', document.getElementById('query').value)">Add New Watch</button>
-    <button onclick="add('email', document.getElementById('query').value)">Add New Email</button>
+    <button onclick="addWatch()">Add New Watch</button>
+    <h2>Convenience Locations:</h2>
+    <button onclick="document.getElementById('folder').value=this.innerHTML">/srv/torrents/HorribleSubs</button><br><br>
+    <button onclick="document.getElementById('folder').value=this.innerHTML">/srv/torrents/Encoded</button>
 </body>
